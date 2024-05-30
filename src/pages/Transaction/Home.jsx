@@ -13,6 +13,7 @@ export default function Component() {
   const [pin, setPin] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [dateRangeFilter, setDateRangeFilter] = useState("");
+  const [accountFilter, setAccountFilter] = useState("");
   const [selectedAccount, setSelectedAccount] = useState({ id: "", type: "" });
   const [txnLoading, setTxnLoading] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
@@ -89,6 +90,9 @@ export default function Component() {
 
   const filteredTransactions = transactions.filter((transaction) => {
     if (statusFilter && statusFilter !== "All" && transaction.status !== statusFilter) {
+      return false;
+    }
+    if (accountFilter && transaction.debitId !== accountFilter) {
       return false;
     }
     const transactionDate = new Date(transaction.timestamp);
@@ -184,6 +188,15 @@ export default function Component() {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-bold">Transaction History</h2>
             <div className="flex items-center space-x-4">
+            <div className="relative">
+            <select className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" id="account-filter" value={accountFilter} onChange={(e) => setAccountFilter(e.target.value)}>
+            <option value="">Account</option>
+            {profile.accounts.map((account, index) => (
+            <option key={index} value={account.id}>
+            {account.accountName}
+           </option>))}
+           </select>
+          </div>
               <div className="relative">
                 <select className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" id="status-filter" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
                   <option value="">Status</option>
